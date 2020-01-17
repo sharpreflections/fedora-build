@@ -19,7 +19,7 @@ FROM base AS production
 COPY --from=build-cmake $prefix $prefix
 # Our build dependencies                                                                                             
 RUN yum -y install xorg-x11-server-utils libX11-devel libSM-devel libxml2-devel libGL-devel \
-                   libGLU-devel libibverbs-devel freetype-devel && \
+                   libGLU-devel libibverbs-devel freetype-devel which && \
     # we need some basic fonts and manpath for the mklvars.sh script
     yum -y install urw-fonts man && \
     # Requirements for using epel
