@@ -31,7 +31,7 @@ RUN yum -y install @development && \
 FROM base AS production
 COPY --from=build-cmake $prefix $prefix
 COPY --from=build-protobuf $prefix $prefix
-# Our build dependencies                                                                                             
+# Our build dependencies
 RUN yum -y install xorg-x11-server-utils libX11-devel libSM-devel libxml2-devel libGL-devel \
                    libGLU-devel libibverbs-devel freetype-devel which && \
     # we need some basic fonts and manpath for the mklvars.sh script
