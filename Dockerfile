@@ -39,7 +39,7 @@ RUN yum -y install xorg-x11-server-utils libX11-devel libSM-devel libxml2-devel 
     # Requirements for using epel
     yum -y install yum-utils epel-release.noarch && \
     # clang, gcc and svn
-    yum -y install @llvm-toolset @development libomp-devel gcc-gfortran subversion cmake && \
+    yum -y install @llvm-toolset @development libomp-devel gcc-gfortran subversion cmake distcc-server ccache && \
     # Misc (developer) tools
     yum -y install strace valgrind bc joe vim nano mc psmisc && \
     yum clean all
