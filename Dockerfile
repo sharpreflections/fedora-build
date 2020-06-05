@@ -16,7 +16,7 @@ RUN yum -y install @development && \
     cd .. && \
     cd protobuf-3.5.2 && \
     ./autogen.sh && \
-    ./configure --prefix=/opt/protobuf-3.5 && \
+    ./configure --prefix=$prefix/protobuf-3.5 && \
     make --jobs=$(nproc --all) && make install && \
     rm -rf /build/*
 
@@ -24,7 +24,7 @@ FROM base AS build-clazy
 RUN yum -y install git make cmake gcc gcc-c++ llvm-devel clang-devel && \
     git clone https://github.com/KDE/clazy.git --branch 1.6 && \
     mkdir clazy-build && cd clazy-build && \
-    cmake ../clazy -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/clazy-1.6 && \
+    cmake ../clazy -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$prefix/clazy-1.6 && \
     make --jobs=$(nproc --all) && make install && \
     rm -rf /build/*
 
