@@ -28,9 +28,19 @@ RUN yum -y install @development && \
     make --jobs=$(nproc --all) && make install && \
     rm -rf /build/*
 
+FROM base AS build-clazy
+RUN yum -y install git make cmake gcc gcc-c++ llvm-devel clang-devel && \
+    git clone https://github.com/KDE/clazy.git --branch 1.6 && \
+    mkdir clazy-build && cd clazy-build && \
+    cmake ../clazy -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/clazy-1.6 && \
+    make --jobs=$(nproc --all) && make install && \
+    rm -rf /build/*
+
 FROM base AS production
 COPY --from=build-cmake $prefix $prefix
 COPY --from=build-protobuf $prefix $prefix
+COPY --from=build-clazy $prefix $prefix
+
 # Our build dependencies
 RUN yum -y install xorg-x11-server-utils libX11-devel libSM-devel libxml2-devel libGL-devel \
                    libGLU-devel libibverbs-devel freetype-devel which && \
