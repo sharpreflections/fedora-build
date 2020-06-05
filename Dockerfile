@@ -4,14 +4,6 @@ LABEL maintainer="dennis.brendel@sharpreflections.com"
 ARG prefix=/opt
 WORKDIR /build/
 
-FROM base AS build-cmake
-RUN echo "Downloading cmake 3.11.4:" && curl --remote-name --progress-bar https://cmake.org/files/v3.11/cmake-3.11.3-Linux-x86_64.tar.gz && \
-    echo "Downloading cmake 3.14.7:" && curl --remote-name --progress-bar https://cmake.org/files/v3.14/cmake-3.14.7-Linux-x86_64.tar.gz && \
-    for file in *; do echo -n "Extracting $file: " && tar --directory=$prefix/ -xf $file && echo "done"; done && \
-    # strip the dir name suffix '-Linux-x86_64' from each cmake installation
-    for dir in $prefix/*; do mv $dir ${dir%-Linux-x86_64}; done && \
-    rm -rf /build/*
-
 FROM base AS build-protobuf
 RUN yum -y install @development && \
     echo "Downloading protobuf 3.0.2:" && curl --progress-bar https://codeload.github.com/protocolbuffers/protobuf/tar.gz/v3.0.2 --output protobuf-3.0.2.tar.gz && \
@@ -37,7 +29,6 @@ RUN yum -y install git make cmake gcc gcc-c++ llvm-devel clang-devel && \
     rm -rf /build/*
 
 FROM base AS production
-COPY --from=build-cmake $prefix $prefix
 COPY --from=build-protobuf $prefix $prefix
 COPY --from=build-clazy $prefix $prefix
 
