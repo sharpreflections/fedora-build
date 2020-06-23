@@ -7,7 +7,7 @@ RUN yum -y upgrade && yum clean all
 
 
 FROM base AS build-protobuf
-RUN yum -y install @development && \
+RUN yum -y install unzip autoconf automake libtool gcc-c++ make && \
     echo "Downloading protobuf 3.0.2:" && curl --progress-bar https://codeload.github.com/protocolbuffers/protobuf/tar.gz/v3.0.2 --output protobuf-3.0.2.tar.gz && \
     echo "Downloading protobuf 3.5.2:" && curl --progress-bar https://codeload.github.com/protocolbuffers/protobuf/tar.gz/v3.5.2 --output protobuf-3.5.2.tar.gz && \
     for file in *; do echo -n "Extracting $file: " && tar -xf $file && echo "done"; done && \
