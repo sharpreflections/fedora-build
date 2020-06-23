@@ -3,6 +3,8 @@ LABEL maintainer="dennis.brendel@sharpreflections.com"
 
 ARG prefix=/opt
 WORKDIR /build/
+RUN yum -y upgrade && yum clean all
+
 
 FROM base AS build-protobuf
 RUN yum -y install @development && \
