@@ -1,4 +1,4 @@
-FROM centos:8 AS base
+FROM fedora:32 AS base
 LABEL maintainer="dennis.brendel@sharpreflections.com"
 
 ARG prefix=/opt
@@ -22,28 +22,17 @@ RUN yum -y install unzip autoconf automake libtool gcc-c++ make && \
     make --jobs=$(nproc --all) && make install && \
     rm -rf /build/*
 
-FROM base AS build-clazy
-RUN yum -y install git make cmake gcc gcc-c++ llvm-devel clang-devel && \
-    git clone https://github.com/KDE/clazy.git --branch 1.6 && \
-    mkdir clazy-build && cd clazy-build && \
-    cmake ../clazy -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$prefix/clazy-1.6 && \
-    make --jobs=$(nproc --all) && make install && \
-    rm -rf /build/*
-
 FROM base AS production
 COPY --from=build-protobuf $prefix $prefix
-COPY --from=build-clazy $prefix $prefix
 
 # Our build dependencies
 RUN yum -y install xorg-x11-server-utils libX11-devel libSM-devel libxml2-devel libGL-devel \
                    libGLU-devel libibverbs-devel freetype-devel which && \
     # we need some basic fonts and manpath for the mklvars.sh script
     yum -y install urw-fonts man && \
-    # Requirements for using epel
-    yum -y install yum-utils epel-release.noarch && \
     # clang, gcc and svn
-    yum -y install @development gcc-gfortran gcc-toolset-9 \
-                   @llvm-toolset libomp-devel subversion cmake distcc-server && \
+    yum -y install @development-tools gcc gcc-c++ gcc-gfortran \
+                   clang libomp-devel clazy subversion cmake distcc-server && \
     # Misc (developer) tools
     yum -y install strace valgrind bc joe vim nano mc psmisc && \
     yum clean all
